@@ -1,0 +1,447 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>玻璃重量计算器</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        /* 自定义滚动条样式 */
+        ::-webkit-scrollbar {
+            width: 8px;
+            height: 8px;
+        }
+
+        ::-webkit-scrollbar-track {
+            background: var(--input-background);
+            border-radius: 4px;
+        }
+
+        ::-webkit-scrollbar-thumb {
+            background: var(--input-border);
+            border-radius: 4px;
+            transition: background-color 0.2s ease;
+        }
+
+        ::-webkit-scrollbar-thumb:hover {
+            background: var(--accent-color);
+        }
+    
+        :root {
+            /* 间距系统 */
+            --spacing-md: 24px;
+            
+            /* 文本色阶 */
+            --text-secondary: rgba(var(--text-primary-rgb),0.8);
+            
+            /* 毛玻璃效果变量 */
+            --backdrop-blur: 20px;
+            
+            /* 衍生变量 */
+            --background-color: #f2f2f7;
+            --card-background: #ffffff;
+            --text-primary: #1a1a1a;
+            --input-border: #e5e5ea;
+            --input-background: #fafafa00;
+            --text-shadow: rgba(0,0,0,0.05);
+            --accent-color: rgb(var(--primary-blue));
+            --accent-rgb: var(--primary-blue);
+            --result-bg: rgba(var(--primary-blue),0.08);
+        }
+
+        @media (prefers-color-scheme: dark) {
+            :root {
+                --background-color: #000000;
+                --card-background: #1c1c1e;
+                --text-primary: #ffffff;
+                --input-border: #4a4a4f;
+                --input-background: #2c2c2e00;
+                --text-shadow: rgba(255,255,255,0.05);
+                --result-bg-opacity: 0.15;
+            }
+            .result {
+                border-color: var(--input-border);
+            }
+            option {
+                background: var(--input-background);
+                color: var(--text-primary);
+            }
+        }
+
+        body {
+            font-family: -apple-system, BlinkMacSystemFont, 'SF Pro', 'PingFang SC', sans-serif;
+            max-width: 600px;
+            margin: 20px auto;
+            padding: 16px;
+            background-color: var(--background-color);
+        }
+
+        @media (prefers-color-scheme: dark) {
+            body {
+                background-color: var(--background-color);
+            }
+        }
+        
+        .container-304 {
+                margin-top: 20px;
+        }
+        .maintxt {
+                margin-block: 20px;
+        }
+        .container, .container-304,.maintxt {
+            background: rgba(255, 255, 255, 0.7);
+            backdrop-filter: blur(var(--backdrop-blur));
+            -webkit-backdrop-filter: blur(var(--backdrop-blur));
+            padding: 32px 24px 24px;
+            border-radius: 16px;
+        }
+
+        @media (prefers-color-scheme: dark) {
+            .container, .container-304,.maintxt {
+                background: rgba(28, 28, 30, 0.7);
+            }
+        }
+
+        h1 {
+            font-size: 28px;
+            line-height: 1.2;
+            margin: 0 0 24px;
+            color: var(--text-primary);
+            font-weight: 700;
+            letter-spacing: -0.4px;
+            text-shadow: 0 2px 4px var(--text-shadow);
+        }
+        .input-group {
+            margin-bottom: 24px;
+        }
+        .flex-row {
+            display: flex;
+            gap: 16px;
+        }
+        .input-half {
+            flex: 1;
+        }
+        .input-with-note {
+            display: flex;
+            align-items: center;
+            gap: 8px;
+        }
+        label {
+            display: block;
+            margin-bottom: 8px;
+            color: var(--text-primary);
+            font-weight: 500;
+            font-size: 15px;
+            letter-spacing: -0.24px;
+        }
+        input {
+            width: 100%;
+            height: 44px;
+            padding: 0 12px;
+            border: 2px solid var(--input-border);
+            border-radius: 12px;
+            box-sizing: border-box;
+            font-size: 17px;
+            line-height: 22px;
+            color: var(--text-primary);
+            background-color: var(--input-background);
+            transition: all 0.2s ease;
+        }
+        input:focus, select:focus {
+            outline: none;
+            border-color: var(--accent-color);
+            background-color: var(--input-background);
+        }
+        .result {
+/* @extend 是 Sass/Less 的语法，原生 CSS 不支持，此处移除该代码 */
+            --result-bg-opacity: 0.08;
+            margin-top: var(--spacing-md);
+            padding: 16px 20px;
+            background-color: rgba(var(--accent-rgb),var(--result-bg-opacity));
+            color: var(--text-primary);
+            border: 2px solid var(--input-border);
+            border-radius: 12px;
+            font-size: 17px;
+            line-height: 22px;
+        }
+        .result span {
+            margin-right: 8px;
+            color: var(--accent-color);
+            font-weight: 600;
+            font-size: 17px;
+        }
+    </style>
+</head>
+<body>
+    <div class="maintxt">
+    <div class="input-group flex-row">
+        <div class="input-half">
+            <label>转换数值：</label>
+            <input type="number" id="areaValue" step="any" placeholder="请输入数值">
+        </div>
+        <div class="input-half">
+            <label>单位转换：</label>
+            <div class="custom-select unit-select" id="unitConverter">
+                <style>
+                    .custom-select {
+                        position: relative;
+                        width: 100%;
+                        height: 44px;
+                    }
+                    .custom-select-selected {
+                        height: 44px;
+                        width: 100%;
+                        padding: 0 12px;
+                        border: 2px solid var(--input-border);
+                        border-radius: 12px;
+                        font-size: 17px;
+                        background: var(--input-background);
+                        color: var(--text-primary);
+                        transition: all 0.2s ease;
+                        display: flex;
+                        align-items: center;
+                        cursor: pointer;
+                        background-image: url("data:image/svg+xml;charset=utf8,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24' fill='%23666666'><path d='M7 10l5 5 5-5z'/></svg>");
+                        background-repeat: no-repeat;
+                        background-position: right 16px center;
+                        background-size: 16px;
+                    }
+                    .custom-select:hover .custom-select-selected {
+                        border-color: var(--accent-color);
+                    }
+                    .custom-select-options {
+                         position: absolute;
+                         top: 100%;
+                         left: 0;
+                         right: 0;
+                         margin-top: 8px;
+                         border: 2px solid var(--input-border);
+                         border-radius: 12px;
+                         background: rgba(255, 255, 255, 0.7);
+                         backdrop-filter: blur(var(--backdrop-blur));
+                         -webkit-backdrop-filter: blur(var(--backdrop-blur));
+                         display: none;
+                         z-index: 10;
+                         max-height: 200px;
+                         overflow-y: auto;
+                     }
+
+                     @media (prefers-color-scheme: dark) {
+                         .custom-select-options {
+                             background: rgba(28, 28, 30, 0.7);
+                         }
+                     }
+                    .custom-select-options.show {
+                        display: block;
+                    }
+                    .custom-select-option {
+                        padding: 12px 16px;
+                        color: var(--text-primary);
+                        font-size: 16px;
+                        border-radius: 8px;
+                        transition: background-color 0.2s ease;
+                        cursor: pointer;
+                    }
+                    .custom-select-option:hover {
+                        background-color: rgba(var(--accent-rgb), 0.1);
+                    }
+                    .custom-select-option.selected {
+                        background-color: rgba(var(--accent-rgb), 0.1);
+                        font-weight: 500;
+                    }
+                    .unit-select:focus-within .custom-select-selected {
+                        border-color: var(--accent-color);
+                    }
+                </style>
+                <div class="custom-select-selected" tabindex="0">mm² → m²</div>
+                <div class="custom-select-options">
+                    <div class="custom-select-option selected" data-value="mm2ToM2">mm² → m²</div>
+                    <div class="custom-select-option" data-value="m2ToMm2">m² → mm²</div>
+                </div>
+            </div>
+            <script>
+                // 初始化自定义下拉菜单
+                document.addEventListener('DOMContentLoaded', function() {
+                    const customSelect = document.getElementById('unitConverter');
+                    const selected = customSelect.querySelector('.custom-select-selected');
+                    const optionsContainer = customSelect.querySelector('.custom-select-options');
+                    const options = customSelect.querySelectorAll('.custom-select-option');
+
+                    // 切换下拉菜单显示/隐藏
+                    selected.addEventListener('click', function() {
+                        optionsContainer.classList.toggle('show');
+                    });
+
+                    // 点击外部关闭下拉菜单
+                    document.addEventListener('click', function(e) {
+                        if (!customSelect.contains(e.target)) {
+                            optionsContainer.classList.remove('show');
+                        }
+                    });
+
+                    // 选择选项
+                    options.forEach(option => {
+                        option.addEventListener('click', function() {
+                            // 更新选中值
+                            selected.textContent = this.textContent;
+                             
+                            // 更新选中状态
+                            options.forEach(opt => opt.classList.remove('selected'));
+                            this.classList.add('selected');
+                             
+                            // 隐藏下拉菜单
+                            optionsContainer.classList.remove('show');
+                             
+                            // 触发转换
+                            convertArea();
+                        });
+                    });
+
+                    // 键盘导航
+                    selected.addEventListener('keydown', function(e) {
+                        if (e.key === 'Enter' || e.key === ' ') {
+                            e.preventDefault();
+                            optionsContainer.classList.toggle('show');
+                        }
+                    });
+                });
+            </script>
+        </div>
+    </div>
+    <div class="result">
+        转换结果：<span id="convertedValue">0</span> <span id="convertedUnit">m²</span>
+    </div>
+    </div>
+    <div class="container">
+        <h1>玻璃重量计算</h1>
+        <div class="input-group flex-row">
+            <div class="input-half">
+                <label for="length">玻璃长度（mm）：</label>
+                <input type="number" id="length" step="any" placeholder="请输入长度">
+            </div>
+            <div class="input-half">
+                <label for="width">玻璃宽度（mm）：</label>
+                <input type="number" id="width" step="any" placeholder="请输入宽度">
+            </div>
+        </div>
+        <div class="input-group">
+            <label for="thickness">玻璃厚度（mm）：</label>
+            <div class="input-with-note">
+                <input type="number" id="thickness" step="any" placeholder="请输入厚度" value="10">
+
+            </div>
+        </div>
+        <div class="result">
+            玻璃重量：<span id="weight">0</span> 千克
+        </div>
+    </div>
+    <div class="container-304">
+        <h1>304重量计算器</h1>
+        <div class="input-group flex-row">
+            <div class="input-half">
+                <label for="area">面积（m²）：</label>
+                <input type="number" id="area" step="any" placeholder="请输入面积">
+            </div>
+            <div class="input-half">
+                <label for="steel_thickness">厚度（mm）：</label>
+                <input type="number" id="steel_thickness" step="any" placeholder="请输入厚度">
+            </div>
+        </div>
+        <div class="result" style="margin-top: 24px;">
+            不锈钢重量：<span id="steel_weight">0</span> 千克
+        </div>
+    </div>
+    <script>
+        // 单位转换系数
+        const MM2_TO_M2 = 0.000001;
+
+        // 材料密度
+        const GLASS_DENSITY = 2500;
+        const STEEL_DENSITY = 7930; // 304不锈钢密度
+
+        // 获取输入框和结果元素
+        const lengthInput = document.getElementById('length');
+        const widthInput = document.getElementById('width');
+        const thicknessInput = document.getElementById('thickness');
+        const weightSpan = document.getElementById('weight');
+
+        // 计算重量函数
+        function calculateWeight() {
+            // 获取输入值（mm）
+            const length = parseFloat(lengthInput.value) || 0;
+            const width = parseFloat(widthInput.value) || 0;
+            const thickness = parseFloat(thicknessInput.value) || 0;
+
+            // 转换为米（1mm=0.001米）
+            const lengthM = length / 1000;
+            const widthM = width / 1000;
+            const thicknessM = thickness / 1000;
+
+            // 计算体积（立方米）
+            const volume = lengthM * widthM * thicknessM;
+
+            // 计算重量（千克）
+            const weight = volume * GLASS_DENSITY;
+
+            // 显示结果（保留两位小数）
+            weightSpan.textContent = weight.toFixed(2);
+        }
+
+        // 获取不锈钢元素
+        const areaInput = document.getElementById('area');
+        const steelThicknessInput = document.getElementById('steel_thickness');
+        const steelWeightSpan = document.getElementById('steel_weight');
+
+        // 不锈钢计算函数
+        function calculateSteelWeight() {
+            const area = parseFloat(areaInput.value) || 0;
+            const thickness = parseFloat(steelThicknessInput.value) || 0;
+            
+            // 厚度转换为米
+            const thicknessM = thickness / 1000;
+            
+            // 计算体积（立方米）和重量
+            const volume = area * thicknessM;
+            const weight = volume * STEEL_DENSITY;
+            
+            steelWeightSpan.textContent = weight.toFixed(2);
+        }
+
+        // 面积转换功能
+        const areaValueInput = document.getElementById('areaValue');
+        const unitConverter = document.getElementById('unitConverter');
+        const convertedValueSpan = document.getElementById('convertedValue');
+
+        function convertArea() {
+            const value = parseFloat(areaValueInput.value) || 0;
+            
+            const convertedUnitSpan = document.getElementById('convertedUnit');
+            // 获取选中的选项值
+            const selectedOption = unitConverter.querySelector('.custom-select-option.selected');
+            const selectedValue = selectedOption ? selectedOption.getAttribute('data-value') : 'mm2ToM2';
+            
+            if(selectedValue === 'mm2ToM2') {
+                convertedValueSpan.textContent = (value * MM2_TO_M2).toFixed(6);
+                convertedUnitSpan.textContent = 'm²';
+            } else {
+                convertedValueSpan.textContent = (value / MM2_TO_M2).toFixed(2);
+                convertedUnitSpan.textContent = 'mm²';
+            }
+        }
+
+        // 监听输入变化自动计算
+        lengthInput.addEventListener('input', calculateWeight);
+        widthInput.addEventListener('input', calculateWeight);
+        thicknessInput.addEventListener('input', calculateWeight);
+        areaInput.addEventListener('input', calculateSteelWeight);
+        areaValueInput.addEventListener('input', convertArea);
+        // 移除原有的change事件监听器
+        steelThicknessInput.addEventListener('input', calculateSteelWeight);
+    </script>
+</body>
+</html>

@@ -1,0 +1,270 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>地弹簧重量计算</title>
+    <style>
+        :root {
+            /* 从原文件复用的颜色体系 */
+            --spacing-md: 24px;
+            --text-secondary: rgba(var(--text-primary-rgb),0.8);
+            --background-color: #f2f2f7;
+            --card-background: #ffffff;
+            --text-primary: #1a1a1a;
+            --input-border: #e5e5ea;
+            --input-background: rgba(255, 255, 255, 0);
+            --text-shadow: rgba(0,0,0,0.05);
+            --accent-color: rgb(0, 122, 255); /* 从原文件select:focus的border-color提取 */
+            --accent-rgb: 0, 122, 255;
+            --backdrop-blur: 20px;
+        }
+
+        @media (prefers-color-scheme: dark) {
+            :root {
+                --background-color: #000000;
+                --card-background: #1c1c1e;
+                --text-primary: #ffffff;
+                --input-border: #4a4a4f;
+                --input-background: rgba(0, 0, 0, 0);
+                --text-shadow: rgba(255,255,255,0.05);
+            }
+        }
+
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        /* 自定义滚动条样式 */
+        ::-webkit-scrollbar {
+            width: 8px;
+            height: 8px;
+        }
+
+        ::-webkit-scrollbar-track {
+            background: var(--input-background);
+            border-radius: 4px;
+        }
+
+        ::-webkit-scrollbar-thumb {
+            background: var(--input-border);
+            border-radius: 4px;
+            transition: background-color 0.2s ease;
+        }
+
+        ::-webkit-scrollbar-thumb:hover {
+            background: var(--accent-color);
+        }
+
+        body {
+            font-family: -apple-system, BlinkMacSystemFont, 'SF Pro', 'PingFang SC', sans-serif;
+            background-color: var(--background-color);
+            min-height: 100vh;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            padding: 16px;
+        }
+
+        @media (prefers-color-scheme: dark) {
+            body {
+                background-color: var(--background-color);
+            }
+        }
+
+        .card-container {
+            max-width: 400px;
+            width: 100%;
+        }
+
+        .calculator-card {
+            background: rgba(255, 255, 255, 0.7);
+            backdrop-filter: blur(var(--backdrop-blur));
+            -webkit-backdrop-filter: blur(var(--backdrop-blur));
+            border-radius: 16px;
+            padding: 40px;
+            text-align: center;
+            cursor: pointer;
+        }
+
+        @media (prefers-color-scheme: dark) {
+            .calculator-card {
+                background: rgba(28, 28, 30, 0.7);
+            }
+        }
+
+        
+
+        .card-icon {
+            width: 80px;
+            height: 80px;
+            background-color: rgba(var(--accent-rgb), 0.1);
+            border-radius: 50%;
+            margin: 0 auto 24px;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+        }
+
+        .card-icon svg {
+            width: 40px;
+            height: 40px;
+            fill: var(--accent-color);
+        }
+
+        .card-title {
+            font-size: 24px;
+            font-weight: 700;
+            color: var(--text-primary);
+            margin-bottom: 16px;
+        }
+
+
+
+
+        /* Iframe 全屏容器 */
+        #calculator-iframe-container {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background-color: rgba(0,0,0,0.7);
+            display: none;
+            justify-content: center;
+            align-items: center;
+            z-index: 1000;
+            opacity: 0;
+            transform: scale(0.95);
+            transition: opacity 0.3s ease, transform 0.3s ease;
+        }
+
+        #calculator-iframe-container.active {
+            opacity: 1;
+            transform: scale(1);
+        }
+
+        #calculator-iframe {
+            width: 100%;
+            height: 100%;
+            border: none;
+        }
+
+        /* 返回按钮 */
+        .back-button {
+            position: fixed;
+            top: 20px;
+            left: 20px;
+            height: 44px;
+            padding: 0 16px;
+            border: 2px solid var(--input-border);
+            background-color: rgba(255, 255, 255, 0.7);
+            backdrop-filter: blur(var(--backdrop-blur));
+            -webkit-backdrop-filter: blur(var(--backdrop-blur));
+            border-radius: 22px;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            gap: 8px;
+            cursor: pointer;
+            z-index: 1001;
+            display: none;
+            transition: opacity 0.3s ease, transform 0.3s ease;
+        }
+
+        @media (prefers-color-scheme: dark) {
+            .back-button {
+                background-color: rgba(28, 28, 30, 0.7);
+            }
+        }
+
+        .back-button svg {
+            width: 20px;
+            height: 20px;
+            fill: var(--text-primary);
+        }
+
+        .back-button span {
+            color: var(--text-primary);
+            font-size: 16px;
+            font-weight: 500;
+        }
+    </style>
+</head>
+<body>
+    <div class="card-container">
+        <div class="calculator-card" id="floor-spring-card">
+            <div class="card-icon">
+                <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M19 3H5c-1.1 0-2 .9-2 2v14c0 1.1.9 2 2 2h14c1.1 0 2-.9 2-2V5c0-1.1-.9-2-2-2zm-5 14h-4v-2h4v2zm0-4h-4V7h4v6z"/></svg>
+            </div>
+            <h2 class="card-title">地弹簧重量计算</h2>
+
+        </div>
+    </div>
+
+    <div id="calculator-iframe-container">
+        <iframe id="calculator-iframe" src="https://raw.5200.host/glass.html"></iframe>
+    </div>
+
+    <div class="back-button" id="back-button" style="opacity: 0; transform: translateY(-10px);">
+        <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M20 11H7.83l5.59-5.59L12 4l-8 8 8 8 1.41-1.41L7.83 13H20v-2z"/></svg>
+        <span>返回</span>
+    </div>
+
+    <script>
+        const card = document.getElementById('floor-spring-card');
+        const iframeContainer = document.getElementById('calculator-iframe-container');
+        const backButton = document.getElementById('back-button');
+
+
+        function openCalculator() {
+            iframeContainer.style.display = 'flex';
+            // 触发重排后添加active类以启动动画
+            setTimeout(() => {
+                iframeContainer.classList.add('active');
+                backButton.style.display = 'flex';
+                // 为返回按钮添加淡入动画
+                setTimeout(() => {
+                    backButton.style.opacity = '1';
+                    backButton.style.transform = 'translateY(0)';
+                }, 50);
+            }, 10);
+            // 隐藏body滚动条
+            document.body.style.overflow = 'hidden';
+        }
+
+        function closeCalculator() {
+            iframeContainer.classList.remove('active');
+            backButton.style.opacity = '0';
+            backButton.style.transform = 'translateY(-10px)';
+            // 等待动画完成后隐藏
+            setTimeout(() => {
+                iframeContainer.style.display = 'none';
+                backButton.style.display = 'none';
+                // 恢复body滚动条
+                document.body.style.overflow = 'auto';
+            }, 300);
+        }
+
+        card.addEventListener('click', openCalculator);
+
+        backButton.addEventListener('click', closeCalculator);
+
+        // 点击iframe容器外部关闭
+        iframeContainer.addEventListener('click', (e) => {
+            if (e.target === iframeContainer) {
+                closeCalculator();
+            }
+        });
+
+        // 键盘ESC关闭
+        document.addEventListener('keydown', (e) => {
+            if (e.key === 'Escape' && iframeContainer.style.display === 'flex') {
+                closeCalculator();
+            }
+        });
+    </script>
+</body>
+</html>
