@@ -11,25 +11,14 @@
             box-sizing: border-box;
         }
 
-        /* 自定义滚动条样式 */
+        /* 隐藏滚动条但保留滚动功能 */
         ::-webkit-scrollbar {
-            width: 8px;
-            height: 8px;
+            display: none;
         }
 
-        ::-webkit-scrollbar-track {
-            background: var(--input-background);
-            border-radius: 4px;
-        }
-
-        ::-webkit-scrollbar-thumb {
-            background: var(--input-border);
-            border-radius: 4px;
-            transition: background-color 0.2s ease;
-        }
-
-        ::-webkit-scrollbar-thumb:hover {
-            background: var(--accent-color);
+        * {
+            -ms-overflow-style: none;
+            scrollbar-width: none;
         }
     
         :root {
