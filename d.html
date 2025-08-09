@@ -1,0 +1,489 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>电费计算器</title>
+    <link rel="icon" href="icon.ico" type="image/x-icon">
+    <script src="https://vip.123pan.cn/1814248145/20299600"></script>
+    <style>
+            * {
+                margin: 0;
+                padding: 0;
+                box-sizing: border-box;
+            }
+
+            /* 隐藏滚动条但保留滚动功能 */
+            ::-webkit-scrollbar {
+                display: none;
+            }
+
+            * {
+                -ms-overflow-style: none;
+                scrollbar-width: none;
+            }
+
+            :root {
+                /* 间距系统 */
+                --spacing-md: 24px;
+
+                /* 文本色阶 */
+                --text-secondary: rgba(var(--text-primary-rgb),0.8);
+
+                /* 毛玻璃效果变量 */
+                --backdrop-blur: 20px;
+
+                /* 衍生变量 */
+                --background-color: #f2f2f7;
+                --card-background: #ffffff;
+                --text-primary: #1a1a1a;
+                --input-border: #e5e5ea;
+                --input-background: #fafafa00;
+                --text-shadow: rgba(0,0,0,0.05);
+                --accent-color: rgb(0, 122, 255); /* 设置默认 accent 颜色 */
+                --accent-rgb: 0, 122, 255;
+                --result-bg: rgba(var(--accent-rgb),0.08);
+            }
+
+            /* Tier Buttons Styles */
+            .tier-buttons {
+                flex-wrap: nowrap;
+                justify-content: center;
+                width: 100%;
+            }
+
+            .tier-btn {
+                flex: 1;
+                padding: 8px 12px;
+                border-radius: 24px;
+                background-color: var(--input-background);
+                color: var(--text-primary);
+                border: 2px solid var(--input-border);
+                cursor: pointer;
+                transition: all 0.2s ease;
+                font-size: 14px;
+                font-weight: 500;
+                text-align: center;
+            }
+
+            .tier-btn:hover {
+                border-color: var(--accent-color);
+            }
+
+            .tier-btn.active {
+                background-color: var(--accent-color);
+                color: white;
+                border-color: var(--accent-color);
+            }
+
+        @media (prefers-color-scheme: dark) {
+            :root {
+                --background-color: #000000;
+                --card-background: #1c1c1e;
+                --text-primary: #f3f3f3;
+                --input-border: #4a4a4f;
+                --input-background: #2c2c2e00;
+                --text-shadow: rgba(255,255,255,0.05);
+                --result-bg-opacity: 0.15;
+            }
+            .result {
+                border-color: var(--input-border);
+            }
+            option {
+                background: var(--input-background);
+                color: var(--text-primary);
+            }
+        }
+
+        body {
+            font-family: -apple-system, BlinkMacSystemFont, 'SF Pro', 'PingFang SC', sans-serif;
+            max-width: 600px;
+            margin: 20px auto;
+            padding: 16px;
+            background-color: var(--background-color);
+        }
+
+        @media (prefers-color-scheme: dark) {
+            body {
+                background-color: var(--background-color);
+            }
+        }
+
+        .container {
+            margin-top: 20px;
+            background: rgba(255, 255, 255, 0.7);
+            backdrop-filter: blur(var(--backdrop-blur));
+            -webkit-backdrop-filter: blur(var(--backdrop-blur));
+            padding: 32px 24px 24px;
+            border-radius: 16px;
+        }
+
+        @media (prefers-color-scheme: dark) {
+            .container {
+                background: rgba(28, 28, 30, 0.7);
+            }
+        }
+
+        h1 {
+            font-size: 28px;
+            line-height: 1.2;
+            margin: 0 0 24px;
+            color: var(--text-primary);
+            font-weight: 700;
+            letter-spacing: -0.4px;
+            text-shadow: 0 2px 4px var(--text-shadow);
+        }
+        .input-group {
+            margin-bottom: 24px;
+        }
+        .flex-row {
+            display: flex;
+            gap: 16px;
+        }
+        .input-half {
+            flex: 1;
+        }
+        label {
+            display: block;
+            margin-bottom: 8px;
+            color: var(--text-primary);
+            font-weight: 500;
+            font-size: 15px;
+            letter-spacing: -0.24px;
+        }
+        input {
+            width: 100%;
+            height: 44px;
+            padding: 0 12px;
+            border: 2px solid var(--input-border);
+            border-radius: 12px;
+            box-sizing: border-box;
+            font-size: 17px;
+            line-height: 22px;
+            color: var(--text-primary);
+            background-color: var(--input-background);
+            transition: all 0.2s ease;
+        }
+        input:focus {
+            outline: none;
+            border-color: var(--accent-color);
+            background-color: var(--input-background);
+        }
+        .result {
+            --result-bg-opacity: 0.08;
+            margin-top: var(--spacing-md);
+            padding: 16px 20px;
+            background-color: rgba(var(--accent-rgb),var(--result-bg-opacity));
+            color: var(--text-primary);
+            border: 2px solid var(--input-border);
+            border-radius: 12px;
+            font-size: 17px;
+            line-height: 22px;
+        }
+        .result span {
+            margin-right: 8px;
+            color: var(--accent-color);
+            font-weight: 600;
+            font-size: 17px;
+        }
+        .chart-container {
+            margin-top: 24px;
+            height: 300px;
+            position: relative;
+        }
+        .tariff-info {
+            margin-top: 16px;
+            padding: 12px;
+            background-color: rgba(var(--accent-rgb), 0.05);
+            border-radius: 8px;
+            font-size: 14px;
+            color: var(--text-primary);
+        }
+        .tariff-info div {
+            margin-bottom: 6px;
+        }
+        .tariff-info span {
+            font-weight: 500;
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <h1>武汉电费计算器</h1>
+        <div class="tier-buttons" style="margin-bottom: 24px; display: flex; gap: 8px;">
+            <button id="autoTierBtn" class="tier-btn active" data-mode="auto">自动</button>
+            <button id="tier1Btn" class="tier-btn" data-tier="1">第一档</button>
+            <button id="tier2Btn" class="tier-btn" data-tier="2">第二档</button>
+            <button id="tier3Btn" class="tier-btn" data-tier="3">第三档</button>
+        </div>
+        <div class="input-group">
+            <label for="electricityUsage">用电量（度）：</label>
+            <input type="number" id="electricityUsage" step="any" placeholder="请输入用电量" value="100">
+        </div>
+        <div class="tariff-info">
+            <div>武汉阶梯电价标准：</div>
+            <div><span>第一档：</span>0-2160度/年，0.558元/度</div>
+            <div><span>第二档：</span>2161-4800度/年，0.608元/度</div>
+            <div><span>第三档：</span>4801度及以上/年，0.858元/度</div>
+        </div>
+
+        <div class="result">
+            电费金额：<span id="electricityCost">0.00</span> 元
+        </div>
+        <div class="chart-container">
+            <canvas id="costChart"></canvas>
+        </div>
+    </div>
+
+    <script>
+        // 获取DOM元素
+        const electricityUsageInput = document.getElementById('electricityUsage');
+        const electricityCostSpan = document.getElementById('electricityCost');
+
+        // 武汉阶梯电价标准（元/度）
+        const TARIFF_1 = 0.558; // 第一档
+        const TARIFF_2 = 0.608; // 第二档
+        const TARIFF_3 = 0.858; // 第三档
+        let manualMode = false;
+        let currentTier = 1; // 默认第一档
+
+        // 阶梯电量分界点（度/年）
+        const THRESHOLD_1 = 2160;
+        const THRESHOLD_2 = 4800;
+
+        // 初始化图表
+        let costChart;
+
+        function initChart() {
+            const ctx = document.getElementById('costChart').getContext('2d');
+
+            // 检查主题模式
+            const isDarkMode = window.matchMedia('(prefers-color-scheme: dark)').matches;
+            const textColor = isDarkMode ? '#f3f3f3' : '#1a1a1a';
+            const gridColor = isDarkMode ? 'rgba(255, 255, 255, 0.1)' : 'rgba(0, 0, 0, 0.1)';
+
+            // 创建渐变
+            const gradient1 = ctx.createLinearGradient(0, 0, 0, 400);
+            gradient1.addColorStop(0, 'rgba(75, 192, 192, 0.8)');
+            gradient1.addColorStop(1, 'rgba(75, 192, 192, 0.2)');
+
+            const gradient2 = ctx.createLinearGradient(0, 0, 0, 400);
+            gradient2.addColorStop(0, 'rgba(255, 159, 64, 0.8)');
+            gradient2.addColorStop(1, 'rgba(255, 159, 64, 0.2)');
+
+            const gradient3 = ctx.createLinearGradient(0, 0, 0, 400);
+            gradient3.addColorStop(0, 'rgba(255, 99, 132, 0.8)');
+            gradient3.addColorStop(1, 'rgba(255, 99, 132, 0.2)');
+
+            costChart = new Chart(ctx, {
+                type: 'bar',
+                data: {
+                    labels: ['第一档', '第二档', '第三档'],
+                    datasets: [{
+                        label: '电量 (度)',
+                        data: [0, 0, 0],
+                        backgroundColor: [gradient1, gradient2, gradient3],
+                        borderColor: [
+                            'rgba(75, 192, 192, 1)',
+                            'rgba(255, 159, 64, 1)',
+                            'rgba(255, 99, 132, 1)'
+                        ],
+                        borderWidth: 1,
+                        borderRadius: 8,
+                        barThickness: 40,
+                        hoverOffset: 10
+                    }]
+                },
+                options: {
+                    responsive: true,
+                    maintainAspectRatio: false,
+                    animation: {
+                        duration: 1000,
+                        easing: 'easeOutQuart'
+                    },
+                    scales: {
+                        y: {
+                            beginAtZero: true,
+                            ticks: {
+                                color: textColor,
+                                padding: 10
+                            },
+                            grid: {
+                                color: gridColor,
+                                borderDash: [5, 5]
+                            },
+                            border: {
+                                display: false
+                            }
+                        },
+                        x: {
+                            ticks: {
+                                color: textColor,
+                                padding: 10
+                            },
+                            grid: {
+                                display: false
+                            },
+                            border: {
+                                display: false
+                            }
+                        }
+                    },
+                    plugins: {
+                        legend: {
+                            display: true,
+                            position: 'top',
+                            labels: {
+                                color: textColor,
+                                usePointStyle: true,
+                                pointStyle: 'circle',
+                                padding: 20
+                            }
+                        },
+                        tooltip: {
+                            backgroundColor: isDarkMode ? 'rgba(28, 28, 30, 0.9)' : 'rgba(255, 255, 255, 0.9)',
+                            titleColor: textColor,
+                            bodyColor: textColor,
+                            borderColor: isDarkMode ? 'rgba(255, 255, 255, 0.1)' : 'rgba(0, 0, 0, 0.1)',
+                            borderWidth: 1,
+                            padding: 12,
+                            cornerRadius: 8,
+                            boxShadow: '0 4px 12px rgba(0, 0, 0, 0.1)',
+                            callbacks: {
+                                label: function(context) {
+                                    let label = context.dataset.label || '';
+                                    if (label) {
+                                        label += ': ';
+                                    }
+                                    label += context.raw + ' 度';
+                                    return label;
+                                }
+                            }
+                        }
+                    }
+                }
+            });
+        }
+
+        // 计算电费
+        function calculateElectricityCost() {
+            const usage = parseFloat(electricityUsageInput.value) || 0;
+            let cost = 0;
+            let tier1 = 0;
+            let tier2 = 0;
+            let tier3 = 0;
+            if (manualMode) {
+                // 手动模式下，根据选择的档位计算
+                switch(currentTier) {
+                    case 1:
+                        cost = usage * TARIFF_1;
+                        tier1 = usage;
+                        break;
+                    case 2:
+                        cost = usage * TARIFF_2;
+                        tier2 = usage;
+                        break;
+                    case 3:
+                        cost = usage * TARIFF_3;
+                        tier3 = usage;
+                        break;
+                }
+            } else {
+                // 自动模式下，按阶梯电价计算
+                if (usage <= THRESHOLD_1) {
+                    cost = usage * TARIFF_1;
+                    tier1 = usage;
+                } else if (usage <= THRESHOLD_2) {
+                    cost = THRESHOLD_1 * TARIFF_1 + (usage - THRESHOLD_1) * TARIFF_2;
+                    tier1 = THRESHOLD_1;
+                    tier2 = usage - THRESHOLD_1;
+                } else {
+                    cost = THRESHOLD_1 * TARIFF_1 + (THRESHOLD_2 - THRESHOLD_1) * TARIFF_2 + (usage - THRESHOLD_2) * TARIFF_3;
+                    tier1 = THRESHOLD_1;
+                    tier2 = THRESHOLD_2 - THRESHOLD_1;
+                    tier3 = usage - THRESHOLD_2;
+                }
+            }
+
+            // 更新显示
+            electricityCostSpan.textContent = cost.toFixed(2);
+
+            // 更新图表
+            if (costChart) {
+                costChart.data.datasets[0].data = [tier1, tier2, tier3];
+                costChart.update();
+            }
+        }
+
+        // 初始化
+        window.addEventListener('DOMContentLoaded', function() {
+            initChart();
+            calculateElectricityCost();
+
+            // 获取DOM元素
+            const autoTierBtn = document.getElementById('autoTierBtn');
+            const tier1Btn = document.getElementById('tier1Btn');
+            const tier2Btn = document.getElementById('tier2Btn');
+            const tier3Btn = document.getElementById('tier3Btn');
+
+            // 监听输入变化
+            electricityUsageInput.addEventListener('input', calculateElectricityCost);
+
+            // 监听按钮点击事件
+            autoTierBtn.addEventListener('click', function() {
+                manualMode = false;
+                // 更新按钮状态
+                updateTierButtons('auto');
+                calculateElectricityCost();
+            });
+
+            tier1Btn.addEventListener('click', function() {
+                manualMode = true;
+                currentTier = 1;
+                updateTierButtons(1);
+                calculateElectricityCost();
+            });
+
+            tier2Btn.addEventListener('click', function() {
+                manualMode = true;
+                currentTier = 2;
+                updateTierButtons(2);
+                calculateElectricityCost();
+            });
+
+            tier3Btn.addEventListener('click', function() {
+                manualMode = true;
+                currentTier = 3;
+                updateTierButtons(3);
+                calculateElectricityCost();
+            });
+
+            // 监听主题变化
+            window.matchMedia('(prefers-color-scheme: dark)').addEventListener('change', function(e) {
+                costChart.destroy();
+                initChart();
+                calculateElectricityCost();
+            });
+
+            // 更新按钮状态的函数
+            function updateTierButtons(activeMode) {
+                // 移除所有按钮的active类
+                [autoTierBtn, tier1Btn, tier2Btn, tier3Btn].forEach(btn => {
+                    btn.classList.remove('active');
+                });
+
+                // 给当前激活的按钮添加active类
+                if (activeMode === 'auto') {
+                    autoTierBtn.classList.add('active');
+                } else if (activeMode === 1) {
+                    tier1Btn.classList.add('active');
+                } else if (activeMode === 2) {
+                    tier2Btn.classList.add('active');
+                } else if (activeMode === 3) {
+                    tier3Btn.classList.add('active');
+                }
+            }
+        });
+    </script>
+</body>
+</html>

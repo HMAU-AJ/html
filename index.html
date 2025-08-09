@@ -65,8 +65,12 @@
         }
 
         .card-container {
-            max-width: 400px;
+            max-width: 800px;
             width: 100%;
+            display: flex;
+            flex-wrap: wrap;
+            gap: 20px;
+            justify-content: center;
         }
 
         .calculator-card {
@@ -232,12 +236,17 @@
 </head>
 <body>
     <div class="card-container">
-        <div class="calculator-card" id="floor-spring-card">
+        <div class="calculator-card" id="floor-spring-card" data-target="glass.html">
+    <div class="card-icon">
+        <svg t="1754712587913" class="icon" viewBox="0 0 1024 1024" version="1.1" xmlns="http://www.w3.org/2000/svg" p-id="1171" width="200" height="200"><path d="M856.62 772.8l4.54-13.31a554.576 554.576 0 0 0 29.41-163.2l0.39-14.06a86.077 86.077 0 0 0-21.24-59.07l-9.26-10.58a554.75 554.75 0 0 0-126.64-107.07l-11.97-7.37a85.94 85.94 0 0 0-61.78-11.13l-13.79 2.73a554.757 554.757 0 0 0-156.05 56.14l-12.37 6.68a85.987 85.987 0 0 0-40.53 47.94l-4.54 13.31a554.576 554.576 0 0 0-29.41 163.2l-0.39 14.06a86.077 86.077 0 0 0 21.24 59.07l9.26 10.58a554.75 554.75 0 0 0 126.64 107.07l11.97 7.37a85.94 85.94 0 0 0 61.78 11.13l13.79-2.73a554.757 554.757 0 0 0 156.05-56.14l12.37-6.68a85.987 85.987 0 0 0 40.53-47.94z" fill="#FFAEAE" p-id="1172"></path><path d="M503 861c-49.26 0-97.07-9.65-142.08-28.69-43.47-18.39-82.5-44.7-116.01-78.21s-59.83-72.54-78.21-116.01c-19.04-45.02-28.69-92.82-28.69-142.08s9.65-97.07 28.69-142.08c18.39-43.47 44.7-82.5 78.21-116.01 33.51-33.51 72.54-59.83 116.01-78.21 45.02-19.04 92.82-28.69 142.08-28.69s97.07 9.65 142.08 28.69c43.47 18.39 82.5 44.7 116.01 78.21 33.51 33.51 59.83 72.54 78.21 116.01 19.04 45.02 28.69 92.82 28.69 142.08s-9.65 97.07-28.69 142.08c-18.39 43.47-44.7 82.5-78.21 116.01-33.51 33.51-72.54 59.83-116.01 78.21C600.06 851.35 552.26 861 503 861z m0-680c-84.14 0-163.24 32.77-222.74 92.26C220.76 332.76 188 411.86 188 496s32.77 163.24 92.26 222.74C339.76 778.24 418.86 811 503 811s163.24-32.77 222.74-92.26C785.24 659.24 818 580.14 818 496s-32.77-163.24-92.26-222.74C666.24 213.76 587.14 181 503 181z" p-id="1173"></path><path d="M500.3 584.98c-21.83 0-43.65-8.31-60.27-24.92-33.23-33.23-33.23-87.3 0-120.52 10.98-10.98 23.42-16.7 33.03-20.46l0.25-0.1 174.7-66.15L583.3 522.9c-3.35 10.12-11.2 25.62-22.74 37.17-16.61 16.61-38.44 24.92-60.26 24.92z m-9.16-119.3c-7.66 3.01-12.23 5.68-15.76 9.2-13.73 13.73-13.73 36.08 0 49.81 13.73 13.73 36.08 13.74 49.81 0 5.12-5.12 9.33-13.43 10.69-17.7l0.46-1.32 25.39-66.73-70.6 26.73z" p-id="1174"></path></svg>
+    </div>
+    <h2 class="card-title">地簧重量</h2>
+</div>
+        <div class="calculator-card" id="electricity-card" data-target="d.html">
             <div class="card-icon">
-                <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M19 3H5c-1.1 0-2 .9-2 2v14c0 1.1.9 2 2 2h14c1.1 0 2-.9 2-2V5c0-1.1-.9-2-2-2zm-5 14h-4v-2h4v2zm0-4h-4V7h4v6z"/></svg>
+                <svg t="1754712556731" class="icon" viewBox="0 0 1024 1024" version="1.1" xmlns="http://www.w3.org/2000/svg" p-id="1013" width="200" height="200"><path d="M718.77 104.28c-135.65 65.79-247.92 140.41-344.25 256.38l-2.93 3.52c-32.18 38.74-22.79 96.95 19.92 123.63a1256.635 1256.635 0 0 0 414.62 165.45c49.34 10.05 96.23-25.7 99.56-75.95l0.3-4.57c10-150.42-20.05-281.85-73.16-422.95-17.22-45.78-70.07-66.87-114.08-45.52h0.02z" fill="#FFAEAE" p-id="1014"></path><path d="M512.08 464.92l-94.66-75.36 31.14-39.12 63.52 50.57 63.51-50.57 31.14 39.12-94.65 75.36z" p-id="1015"></path><path d="M512 837.27c-46.02 0-90.68-9.02-132.74-26.81-40.61-17.18-77.07-41.76-108.38-73.07-31.31-31.31-55.89-67.77-73.07-108.38C180.02 586.95 171 542.29 171 496.27s9.02-90.68 26.81-132.74c17.18-40.61 41.76-77.07 73.07-108.38 31.31-31.31 67.77-55.89 108.38-73.07 42.06-17.79 86.72-26.81 132.74-26.81s90.68 9.02 132.74 26.81c40.61 17.18 77.07 41.76 108.38 73.07 31.31 31.31 55.89 67.77 73.07 108.38C843.98 405.59 853 450.25 853 496.27s-9.02 90.68-26.81 132.74c-17.18 40.61-41.76 77.07-73.07 108.38-31.31 31.31-67.77 55.89-108.38 73.07-42.06 17.79-86.72 26.81-132.74 26.81z m0-632c-77.73 0-150.81 30.27-205.77 85.23C251.27 345.46 221 418.54 221 496.27s30.27 150.81 85.23 205.77C361.19 757 434.27 787.27 512 787.27S662.81 757 717.77 702.04C772.73 647.08 803 574 803 496.27s-30.27-150.81-85.23-205.77c-54.96-54.96-128.04-85.23-205.77-85.23z" p-id="1016"></path><path d="M487.08 477.97h50v173.96h-50zM816.06 343.2l-35.36-35.36c10.58-10.58 16.41-24.65 16.41-39.62s-5.83-29.04-16.41-39.62c-21.85-21.85-57.39-21.85-79.24 0l-35.36-35.36c41.34-41.34 108.61-41.34 149.95 0 20.03 20.03 31.06 46.65 31.06 74.98s-11.03 54.95-31.06 74.98zM207.24 343.2c-20.03-20.03-31.06-46.65-31.06-74.98s11.03-54.95 31.06-74.97c20.03-20.03 46.65-31.06 74.97-31.06s54.95 11.03 74.98 31.06l-35.36 35.36c-10.58-10.58-24.65-16.41-39.62-16.41s-29.04 5.83-39.62 16.41c-10.58 10.58-16.41 24.65-16.41 39.62s5.83 29.04 16.41 39.62l-35.36 35.36zM663.763 781.439l39.89-30.147 55.945 74.028-39.89 30.146zM264.673 825.177l55.946-74.027 39.89 30.146-55.946 74.028z" p-id="1017"></path><path d="M399.8 434.85h224.55v50H399.8zM399.8 528.84h224.55v50H399.8z" p-id="1018"></path></svg>
             </div>
-            <h2 class="card-title">地弹簧重量计算</h2>
-
+            <h2 class="card-title">电费计算</h2>
         </div>
     </div>
 
@@ -251,12 +260,13 @@
         </div>
 
     <script>
-        const card = document.getElementById('floor-spring-card');
         const iframeContainer = document.getElementById('calculator-iframe-container');
+        const calculatorIframe = document.getElementById('calculator-iframe');
         const backButton = document.getElementById('back-button');
 
 
-        function openCalculator() {
+        function openCalculator(targetUrl) {
+            calculatorIframe.src = targetUrl;
             iframeContainer.style.display = 'flex';
             // 触发重排后添加active类以启动动画
             setTimeout(() => {
@@ -272,6 +282,16 @@
             document.body.style.overflow = 'hidden';
         }
 
+        // 为所有计算器卡片添加点击事件
+        document.querySelectorAll('.calculator-card').forEach(card => {
+            card.addEventListener('click', () => {
+                const targetUrl = card.getAttribute('data-target');
+                if (targetUrl) {
+                    openCalculator(targetUrl);
+                }
+            });
+        })
+
         function closeCalculator() {
             iframeContainer.classList.remove('active');
             backButton.style.opacity = '0';
@@ -284,8 +304,6 @@
                 document.body.style.overflow = 'auto';
             }, 300);
         }
-
-        card.addEventListener('click', openCalculator);
 
         backButton.addEventListener('click', closeCalculator);
 
@@ -306,49 +324,58 @@
     
     <!-- 访问者信息功能 -->
     <div class="visitor-info" id="visitorInfo">
-        <span class="loading-spinner"></span>正在获取您的位置和设备信息...
+        <span class="loading-spinner"></span>正在获取浏览器和操作系统信息...
     </div>
     
     <script>
-        // 获取访问者信息
-        function getVisitorInfo() {
-            const visitorInfoElement = document.getElementById('visitorInfo');
-            
-            // 获取设备信息
-            const userAgent = navigator.userAgent;
-            let deviceType = '未知设备';
-            
-            if (/mobile/i.test(userAgent)) {
-                deviceType = '移动设备';
-            } else if (/tablet/i.test(userAgent)) {
-                deviceType = '平板设备';
-            } else if (/desktop/i.test(userAgent) || !/mobile|tablet/i.test(userAgent)) {
-                deviceType = '桌面设备';
-            }
-            
-            // 使用ipapi.co API获取中文地理位置信息
-            fetch('https://ipapi.co/json/?lang=zh-CN')
-                .then(response => response.json())
-                .then(data => {
-                    const ip = data.ip || '未知IP';
-                    const country = data.country_name || '未知国家';
-                    const region = data.region || '未知省份';
-                    const city = data.city || '未知城市';
-                    
-                    // 延迟一点时间显示，让过渡效果更明显
-                    setTimeout(() => {
-                        visitorInfoElement.innerHTML = `您的位置：${country} ${region} ${city} | IP：${ip} | 设备：${deviceType}`;
-                        visitorInfoElement.classList.add('show');
-                    }, 300);
-                })
-                .catch(error => {
-                    console.error('获取IP信息失败:', error);
-                    visitorInfoElement.textContent = `设备：${deviceType} | 位置信息获取失败`;
-                });
+        // 获取设备详细信息
+    function getDeviceInfo() {
+        const visitorInfoElement = document.getElementById('visitorInfo');
+        
+        // 获取用户代理字符串
+        const userAgent = navigator.userAgent;
+        
+        // 检测浏览器类型和版本
+        let browser = '未知浏览器';
+        if (userAgent.includes('Chrome')) {
+            browser = 'Chrome ' + userAgent.match(/Chrome\/([0-9.]+)/)[1];
+        } else if (userAgent.includes('Firefox')) {
+            browser = 'Firefox ' + userAgent.match(/Firefox\/([0-9.]+)/)[1];
+        } else if (userAgent.includes('Safari')) {
+            browser = 'Safari ' + userAgent.match(/Version\/([0-9.]+)/)[1];
+        } else if (userAgent.includes('Edge')) {
+            browser = 'Edge ' + userAgent.match(/Edge\/([0-9.]+)/)[1];
+        } else if (userAgent.includes('IE')) {
+            browser = 'Internet Explorer ' + userAgent.match(/MSIE ([0-9.]+)/)[1];
         }
         
-        // 页面加载完成后获取访问者信息
-        window.addEventListener('load', getVisitorInfo);
+        // 检测操作系统
+        let os = '未知操作系统';
+        if (userAgent.includes('Windows')) {
+            os = 'Windows';
+            if (userAgent.includes('Windows 10')) os = 'Windows 10';
+            else if (userAgent.includes('Windows 11')) os = 'Windows 11';
+            else if (userAgent.includes('Windows 8')) os = 'Windows 8';
+            else if (userAgent.includes('Windows 7')) os = 'Windows 7';
+        } else if (userAgent.includes('Mac OS')) {
+            os = 'macOS ' + userAgent.match(/Mac OS X ([0-9_]+)/)[1].replace(/_/g, '.');
+        } else if (userAgent.includes('Linux')) {
+            os = 'Linux';
+        } else if (userAgent.includes('Android')) {
+            os = 'Android ' + userAgent.match(/Android ([0-9.]+)/)[1];
+        } else if (userAgent.includes('iOS')) {
+            os = 'iOS ' + userAgent.match(/OS ([0-9_]+)/)[1].replace(/_/g, '.');
+        }
+        
+        // 延迟一点时间显示，让过渡效果更明显
+        setTimeout(() => {
+            visitorInfoElement.innerHTML = `浏览器：${browser} | 操作系统：${os}`;
+            visitorInfoElement.classList.add('show');
+        }, 300);
+    }
+        
+        // 页面加载完成后获取设备信息
+        window.addEventListener('load', getDeviceInfo);
     </script>
 </body>
 </html>
